@@ -1,0 +1,31 @@
+{
+  "name": "buddy",
+  "version": "1.0.0",
+  "description": "This is a web api to manage my buddy circle.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --config jest.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/farhadgharaie/buddy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/farhadgharaie/buddy/issues"
+  },
+  "homepage": "https://github.com/farhadgharaie/buddy#readme",
+  "devDependencies": {
+    "@types/jest": "^29.5.11",
+    "@types/uuid": "^9.0.7",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3",
+    "uuid": "^9.0.1"
+  }
+}
