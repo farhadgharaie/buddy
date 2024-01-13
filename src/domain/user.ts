@@ -19,8 +19,8 @@ export interface IUser {
 export class User extends Entity<IUser>  {
     private _email: string;
     private _password: string;
-    private _firstname: string;
-    private _lastname: string;
+    private _firstName: string;
+    private _lastName: string;
     private _birthdate: Date;
     private _friends: { user: User; status: FriendshipStatus }[];
     private _invitations: { user: User; status: FriendshipStatus }[];
@@ -29,8 +29,8 @@ export class User extends Entity<IUser>  {
         super();
         this._email = user.email;
         this._password = user.password;
-        this._firstname = user.firstName;
-        this._lastname = user.lastName;
+        this._firstName = user.firstName;
+        this._lastName = user.lastName;
         this._birthdate = user.birthdate;
         this._friends = user.friends || [];
         this._invitations = user.invitations || [];
@@ -40,12 +40,12 @@ export class User extends Entity<IUser>  {
         return this._email;
     }
 
-    get firstname() {
-        return this._firstname;
+    get firstName() {
+        return this._firstName;
     }
 
-    get lastname() {
-        return this._lastname;
+    get lastName() {
+        return this._lastName;
     }
 
     get birthdate() {
@@ -66,7 +66,7 @@ export class User extends Entity<IUser>  {
         return age
     }
 
-    public static save(props: IUser):User {
+    public static save(props: IUser): User {
         return new User(props);
     }
 
@@ -92,5 +92,5 @@ export class User extends Entity<IUser>  {
     declineFriendship(inviter: User): void {
         this._invitations = this._invitations.filter((invite) => invite.user.id !== inviter.id);
         inviter._friends = inviter._friends.filter((invite) => invite.user.id !== this.id);
-      }
+    }
 }

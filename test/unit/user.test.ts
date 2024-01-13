@@ -28,8 +28,8 @@ describe('Unit test User', () => {
             expect(user).not.toHaveProperty('password');
             expect(user).toBeDefined();
             expect(user.email).toBe(userMock.email);
-            expect(user.firstname).toBe(userMock.firstName);
-            expect(user.lastname).toBe(userMock.lastName);
+            expect(user.firstName).toBe(userMock.firstName);
+            expect(user.lastName).toBe(userMock.lastName);
             expect(user.birthdate).toBe(userMock.birthdate);
             expect(user.friends).toEqual(userMock.friends);
             expect(user.invitations).toEqual(userMock.invitations);
@@ -131,15 +131,15 @@ describe('Unit test User', () => {
                 invitations: [],
                 friends: [],
             });
-        
+
             inviterUser.inviteFriend(invitedUser);
             invitedUser.declineFriendship(inviterUser);
-        
+
             expect(inviterUser.invitations).toHaveLength(0);
             expect(inviterUser.friends).toHaveLength(0);
             expect(invitedUser.invitations).toHaveLength(0);
             expect(invitedUser.friends).toHaveLength(0);
-          });
+        });
     })
 });
 
