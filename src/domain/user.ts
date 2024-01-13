@@ -70,6 +70,9 @@ export class User extends Entity<IUser>  {
         return new User(props);
     }
 
+    isValidPassword(password: string) {
+        return this._password === password
+    }
     inviteFriend(friend: User): void {
         this._friends.push({ user: friend, status: FriendshipStatus.Pending });
         friend._invitations.push({ user: this, status: FriendshipStatus.Pending })

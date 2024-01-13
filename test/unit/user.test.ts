@@ -45,6 +45,12 @@ describe('Unit test User', () => {
             assert.ok(validate(user.id));
         });
 
+        it('generates user with valid password', () => {
+            const user = new User(userMock);
+            expect(user.isValidPassword(validPassword)).toBeTruthy
+           
+        });
+
         it('invites a friend', () => {
             const user = new User({
                 email: validEmail,

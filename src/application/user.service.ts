@@ -13,5 +13,14 @@ export class UserService {
         const user = new User({ email, password, firstName, lastName, birthdate, friends: [], invitations: [] });
         return await this.userRepository.save(user);
     }
+    async login(email: string, password: string): Promise<{ token: string, email: string, firstName: string, lastName: string } | null> {
+        const user = await this.userRepository.findByEmail(email);
 
+        if (user && user.isValidPassword(password)) {
+            const token = 'your_generated_token';
+            return { token, email: user.email, firstName: user.firstName, lastName: user.lastName };
+        }
+
+        throw new Error('Invalid credentials');
+    }
 }
