@@ -1,4 +1,4 @@
-import { UserService } from '../../src/application/user.service';
+import { FriendService } from '../../src/application/friend.service'
 import { UserRepository } from "../../src/domain/user.repository";
 import { User, IUser, FriendshipStatus } from '../../src/domain/user';
 
@@ -16,10 +16,10 @@ jest.mock('../../src/domain/user.repository', () => ({
 }));
 
 describe('UserService', () => {
-    let userService: UserService;
+    let friendService: FriendService;
 
     beforeEach(() => {
-        userService = new UserService(userRepositoryMock);
+        friendService = new FriendService(userRepositoryMock);
     });
 
     afterEach(() => {
@@ -45,7 +45,7 @@ describe('UserService', () => {
             const userId = userInstance._id;
             userRepositoryMock.findById.mockResolvedValueOnce(userInstance);
 
-            const result = await userService.getInvitations(userId);
+            const result = await friendService.getInvitations(userId);
 
             expect(result).toHaveLength(2);
             expect(result.map(invitation => invitation.id)).toEqual(['inviter1', 'inviter2']);
@@ -57,7 +57,7 @@ describe('UserService', () => {
 
             userRepositoryMock.findById.mockResolvedValueOnce(null);
 
-            await expect(userService.getInvitations(invalidUserId)).rejects.toThrow('Invalid user ID');
+            await expect(friendService.getInvitations(invalidUserId)).rejects.toThrow('Invalid user ID');
 
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(invalidUserId);
         });
@@ -97,7 +97,7 @@ describe('UserService', () => {
             userRepositoryMock.save.mockResolvedValueOnce(senderUserInstance);
 
             senderUserInstance.inviteFriend = jest.fn();
-            await userService.inviteFriend(senderId, receiverId);
+            await friendService.inviteFriend(senderId, receiverId);
 
             expect(senderUserInstance.inviteFriend).toHaveBeenCalledWith(receiverUserInstance);
             expect(userRepositoryMock.save).toHaveBeenCalledWith(senderUserInstance);
@@ -109,7 +109,7 @@ describe('UserService', () => {
 
             userRepositoryMock.findById.mockResolvedValueOnce(null);
 
-            await expect(userService.inviteFriend(invalidSenderId, receiverId)).rejects.toThrow('Invalid user IDs');
+            await expect(friendService.inviteFriend(invalidSenderId, receiverId)).rejects.toThrow('Invalid user IDs');
 
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(invalidSenderId);
             expect(userRepositoryMock.save).not.toHaveBeenCalled();
@@ -134,7 +134,7 @@ describe('UserService', () => {
             userRepositoryMock.findById.mockResolvedValueOnce(senderUserInstance);
             userRepositoryMock.findById.mockResolvedValueOnce(null); // For simulate an invalid receiver ID
 
-            await expect(userService.inviteFriend(senderId, invalidReceiverId)).rejects.toThrow('Invalid user IDs');
+            await expect(friendService.inviteFriend(senderId, invalidReceiverId)).rejects.toThrow('Invalid user IDs');
 
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(senderId);
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(invalidReceiverId);
@@ -171,7 +171,7 @@ describe('UserService', () => {
 
             userRepositoryMock.save.mockResolvedValueOnce(userInstance);
 
-            await userService.acceptFriendship(userInstance.id, inviterInstance.id);
+            await friendService.acceptFriendship(userInstance.id, inviterInstance.id);
 
             expect(userInstance.invitations).toHaveLength(0);
             expect(userInstance.friends).toHaveLength(1);
@@ -188,7 +188,7 @@ describe('UserService', () => {
             userRepositoryMock.findById.mockResolvedValueOnce(null);
             userRepositoryMock.findById.mockResolvedValueOnce(null);
 
-            await expect(userService.acceptFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
+            await expect(friendService.acceptFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
 
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(senderId);
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(receiverId);
@@ -227,7 +227,7 @@ describe('UserService', () => {
 
             userRepositoryMock.save.mockResolvedValueOnce(userInstance);
 
-            await userService.declineFriendship(userInstance.id, inviterInstance.id);
+            await friendService.declineFriendship(userInstance.id, inviterInstance.id);
 
             expect(userInstance.invitations).toHaveLength(0);
             expect(userInstance.friends).toHaveLength(0);
@@ -242,7 +242,7 @@ describe('UserService', () => {
             userRepositoryMock.findById.mockResolvedValueOnce(null);
             userRepositoryMock.findById.mockResolvedValueOnce(null);
 
-            await expect(userService.declineFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
+            await expect(friendService.declineFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
 
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(senderId);
             expect(userRepositoryMock.findById).toHaveBeenCalledWith(receiverId);

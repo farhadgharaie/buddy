@@ -1,4 +1,4 @@
-import { UserService as AuthenticationService } from '../../src/application/authentication.service';
+import { AuthenticationService } from '../../src/application/authentication.service';
 import { UserRepository } from "../../src/domain/user.repository";
 import { User, IUser } from '../../src/domain/user';
 

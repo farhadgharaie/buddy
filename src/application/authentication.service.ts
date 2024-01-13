@@ -1,7 +1,7 @@
 import { User } from '../domain/user';
 import { UserRepository } from '../domain/user.repository';
 
-export class UserService {
+export class AuthenticationService {
     constructor(private userRepository: UserRepository) { }
     async login(email: string, password: string): Promise<{ token: string, email: string, firstName: string, lastName: string } | null> {
         const user = await this.userRepository.findByEmail(email);
