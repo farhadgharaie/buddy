@@ -36,13 +36,37 @@ export class UserService {
     async inviteFriend(senderId: string, receiverId: string): Promise<void> {
         const sender = await this.userRepository.findById(senderId);
         const receiver = await this.userRepository.findById(receiverId);
-    
+
         if (!sender || !receiver) {
+            throw new Error('Invalid user IDs');
+        }
+
+        sender.inviteFriend(receiver);
+        await this.userRepository.save(sender);
+    }
+
+    async acceptFriendship(userId: string, inviterId: string): Promise<void> {
+        const user = await this.userRepository.findById(userId);
+        const inviter = await this.userRepository.findById(inviterId);
+
+        if (!user || !inviter) {
+            throw new Error('Invalid user IDs');
+        }
+
+        user.acceptFriendship(inviter);
+        await this.userRepository.save(user);
+    }
+
+    async declineFriendship(userId: string, inviterId: string): Promise<void> {
+        const user = await this.userRepository.findById(userId);
+        const inviter = await this.userRepository.findById(inviterId);
+    
+        if (!user || !inviter) {
           throw new Error('Invalid user IDs');
         }
     
-        sender.inviteFriend(receiver);
-        await this.userRepository.save(sender);
+        user.declineFriendship(inviter);
+        await this.userRepository.save(user);
       }
 
 }

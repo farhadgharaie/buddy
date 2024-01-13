@@ -106,7 +106,7 @@ describe('UserService', () => {
             const invalidSenderId = 'invalidSender';
             const receiverId = 'receiver1';
 
-            userRepositoryMock.findById.mockResolvedValueOnce(null); // Simulate invalid sender ID
+            userRepositoryMock.findById.mockResolvedValueOnce(null);
 
             await expect(userService.inviteFriend(invalidSenderId, receiverId)).rejects.toThrow('Invalid user IDs');
 
@@ -142,10 +142,111 @@ describe('UserService', () => {
     });
 
     describe('acceptFriendship', () => {
-        // Add test cases for acceptFriendship
+        it('should successfully accept a friendship invitation', async () => {
+            const inviterMock: IUser = {
+                email: 'inviter@test.com',
+                password: 'validPassword',
+                firstName: 'Inviter',
+                lastName: 'User',
+                birthdate: new Date('2005-01-15'),
+                friends: [],
+                invitations: []
+            };
+            const inviterInstance = new User(inviterMock);
+
+            const userMock: IUser = {
+                email: 'ali@test.com',
+                password: 'validPassword',
+                firstName: 'Simin',
+                lastName: 'Jones',
+                birthdate: new Date('2010-03-07'),
+                friends: [],
+                invitations: [{ user: inviterInstance, status: FriendshipStatus.Pending }]
+            };
+            const userInstance = new User(userMock);
+
+            userRepositoryMock.findById.mockResolvedValueOnce(userInstance);
+            userRepositoryMock.findById.mockResolvedValueOnce(inviterInstance);
+
+            userRepositoryMock.save.mockResolvedValueOnce(userInstance);
+
+            await userService.acceptFriendship(userInstance.id, inviterInstance.id);
+
+            expect(userInstance.invitations).toHaveLength(0);
+            expect(userInstance.friends).toHaveLength(1);
+            expect(userInstance.friends[0].user).toEqual(inviterInstance);
+            expect(userInstance.friends[0].status).toBe(FriendshipStatus.Accepted);
+
+            expect(userRepositoryMock.save).toHaveBeenCalledWith(userInstance);
+        });
+
+        it('should throw an error for invalid user IDs', async () => {
+            const senderId = 'invalidSenderId';
+            const receiverId = 'invalidReceiverId';
+
+            userRepositoryMock.findById.mockResolvedValueOnce(null);
+            userRepositoryMock.findById.mockResolvedValueOnce(null);
+
+            await expect(userService.acceptFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
+
+            expect(userRepositoryMock.findById).toHaveBeenCalledWith(senderId);
+            expect(userRepositoryMock.findById).toHaveBeenCalledWith(receiverId);
+
+            expect(userRepositoryMock.save).not.toHaveBeenCalled();
+        });
+
     });
 
     describe('declineFriendship', () => {
-        // Add test cases for declineFriendship
+        it('should successfully decline a friendship invitation', async () => {
+            const inviterMock: IUser = {
+                email: 'inviter@test.com',
+                password: 'validPassword',
+                firstName: 'Inviter',
+                lastName: 'User',
+                birthdate: new Date('2005-01-15'),
+                friends: [],
+                invitations: []
+            };
+            const inviterInstance = new User(inviterMock);
+
+            const userMock: IUser = {
+                email: 'ali@test.com',
+                password: 'validPassword',
+                firstName: 'Simin',
+                lastName: 'Jones',
+                birthdate: new Date('2010-03-07'),
+                friends: [],
+                invitations: [{ user: inviterInstance, status: FriendshipStatus.Pending }]
+            };
+            const userInstance = new User(userMock);
+
+            userRepositoryMock.findById.mockResolvedValueOnce(userInstance);
+            userRepositoryMock.findById.mockResolvedValueOnce(inviterInstance);
+
+            userRepositoryMock.save.mockResolvedValueOnce(userInstance);
+
+            await userService.declineFriendship(userInstance.id, inviterInstance.id);
+
+            expect(userInstance.invitations).toHaveLength(0);
+            expect(userInstance.friends).toHaveLength(0);
+
+            expect(userRepositoryMock.save).toHaveBeenCalledWith(userInstance);
+        });
+
+        it('should throw an error for invalid user IDs', async () => {
+            const senderId = 'invalidSenderId';
+            const receiverId = 'invalidReceiverId';
+
+            userRepositoryMock.findById.mockResolvedValueOnce(null);
+            userRepositoryMock.findById.mockResolvedValueOnce(null);
+
+            await expect(userService.declineFriendship(senderId, receiverId)).rejects.toThrow('Invalid user IDs');
+
+            expect(userRepositoryMock.findById).toHaveBeenCalledWith(senderId);
+            expect(userRepositoryMock.findById).toHaveBeenCalledWith(receiverId);
+
+            expect(userRepositoryMock.save).not.toHaveBeenCalled();
+        });
     });
 });
