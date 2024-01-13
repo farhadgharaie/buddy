@@ -1,4 +1,3 @@
-import { User } from '../domain/user';
 import { UserRepository } from '../domain/user.repository';
 
 export class AuthenticationService {
