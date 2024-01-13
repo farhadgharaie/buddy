@@ -160,7 +160,7 @@ describe('UserService', () => {
             expect(filteredUsers).toHaveLength(1);
             expect(filteredUsers[0].firstName).toBe('John');
             expect(filteredUsers[0].lastName).toBe('Doe');
-            expect(filteredUsers[0].age).toBe(26); // Adjust the age based on current date
+            expect(filteredUsers[0].age).toBe(26); 
 
             expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
         });
@@ -178,7 +178,7 @@ describe('UserService', () => {
             expect(filteredUsers).toHaveLength(1);
             expect(filteredUsers[0].firstName).toBe('John');
             expect(filteredUsers[0].lastName).toBe('Doe');
-            expect(filteredUsers[0].age).toBe(26); // Adjust the age based on current date
+            expect(filteredUsers[0].age).toBe(26); 
 
             expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
         });
