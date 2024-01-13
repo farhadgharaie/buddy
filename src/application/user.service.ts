@@ -13,6 +13,7 @@ export class UserService {
         const user = new User({ email, password, firstName, lastName, birthdate, friends: [], invitations: [] });
         return await this.userRepository.save(user);
     }
+
     async login(email: string, password: string): Promise<{ token: string, email: string, firstName: string, lastName: string } | null> {
         const user = await this.userRepository.findByEmail(email);
 
@@ -68,5 +69,17 @@ export class UserService {
         user.declineFriendship(inviter);
         await this.userRepository.save(user);
       }
+
+      async searchUsers(userId: string, firstName: string | null, lastName: string | null, age: number | null): Promise<User[]> {
+        const allUsersExceptFriends = await this.userRepository.getAllUsersExcludeFriends(userId);
+
+        return allUsersExceptFriends.filter((user) => {
+            const matchFirstName = firstName ? user.firstName.includes(firstName) : true;
+            const matchLastName = lastName ? user.lastName.includes(lastName) : true;
+            const matchAge = age ? user.age === age : true;
+
+            return matchFirstName && matchLastName && matchAge;
+        });
+    }
 
 }
