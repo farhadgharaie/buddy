@@ -1,5 +1,4 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import userController from './src/interfaces/controllers/user.controller';
 import friendController from './src/interfaces/controllers/friend.controller';
@@ -9,12 +8,10 @@ import { UserRepository } from './src/domain/user.repository';
 import { UserService } from './src/application/user.service';
 import { FriendService } from './src/application/friend.service';
 import { AuthenticationService } from './src/application/authentication.service';
+import './src/infrastructure/databases/mongodb/database';
 
 const app = express();
 const PORT = 3000;
-
-// Connect to MongoDB
-mongoose.connect('your-mongodb-connection-string', { });
 
 // Create instances of services and repositories
 const userRepository: UserRepository = new MongoDBUserRepository();
