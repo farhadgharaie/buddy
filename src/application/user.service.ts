@@ -23,4 +23,14 @@ export class UserService {
 
         throw new Error('Invalid credentials');
     }
+
+    async getInvitations(userId: string): Promise<User[]> {
+        const user = await this.userRepository.findById(userId);
+        if (!user) {
+            throw new Error('Invalid user ID');
+        }
+
+        return user.invitations.map(invitation => invitation.user);
+    }
+
 }
