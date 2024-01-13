@@ -33,4 +33,16 @@ export class UserService {
         return user.invitations.map(invitation => invitation.user);
     }
 
+    async inviteFriend(senderId: string, receiverId: string): Promise<void> {
+        const sender = await this.userRepository.findById(senderId);
+        const receiver = await this.userRepository.findById(receiverId);
+    
+        if (!sender || !receiver) {
+          throw new Error('Invalid user IDs');
+        }
+    
+        sender.inviteFriend(receiver);
+        await this.userRepository.save(sender);
+      }
+
 }
