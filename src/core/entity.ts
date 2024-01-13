@@ -1,12 +1,10 @@
 import { v4 as UUID } from 'uuid';
 
 export abstract class Entity<T> {
-    public readonly _id: string;
+    public id: string;
 
     constructor() {
-        this._id = UUID();
+        this.id = UUID();
     }
-    get id(): string {
-        return this._id;
-    }
+    
 }

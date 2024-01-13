@@ -42,7 +42,7 @@ describe('UserService', () => {
             };
 
             const userInstance = new User(mockUser);
-            const userId = userInstance._id;
+            const userId = userInstance.id;
             userRepositoryMock.findById.mockResolvedValueOnce(userInstance);
 
             const result = await friendService.getInvitations(userId);
@@ -76,7 +76,7 @@ describe('UserService', () => {
             };
 
             const senderUserInstance = new User(senderUserMock);
-            const senderId = senderUserInstance._id;
+            const senderId = senderUserInstance.id;
 
             const receiverUserMock: IUser = {
                 email: 'Simin@test.com',
@@ -89,7 +89,7 @@ describe('UserService', () => {
             };
 
             const receiverUserInstance = new User(receiverUserMock);
-            const receiverId = receiverUserInstance._id;
+            const receiverId = receiverUserInstance.id;
 
             userRepositoryMock.findById.mockResolvedValueOnce(senderUserInstance);
             userRepositoryMock.findById.mockResolvedValueOnce(receiverUserInstance);
@@ -129,7 +129,7 @@ describe('UserService', () => {
             };
 
             const senderUserInstance = new User(senderUserMock);
-            const senderId = senderUserInstance._id;
+            const senderId = senderUserInstance.id;
 
             userRepositoryMock.findById.mockResolvedValueOnce(senderUserInstance);
             userRepositoryMock.findById.mockResolvedValueOnce(null); // For simulate an invalid receiver ID

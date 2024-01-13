@@ -17,51 +17,35 @@ export interface IUser {
 }
 
 export class User extends Entity<IUser>  {
-    private _email: string;
-    private _password: string;
-    private _firstName: string;
-    private _lastName: string;
-    private _birthdate: Date;
+
     private _friends: { user: User; status: FriendshipStatus }[];
     private _invitations: { user: User; status: FriendshipStatus }[];
-
+    private _password: string;
     constructor(user: IUser) {
         super();
-        this._email = user.email;
+        this.email = user.email;
         this._password = user.password;
-        this._firstName = user.firstName;
-        this._lastName = user.lastName;
-        this._birthdate = user.birthdate;
+        this.firstName = user.firstName;
+        this.lastName = user.lastName;
+        this.birthdate = user.birthdate;
         this._friends = user.friends || [];
         this._invitations = user.invitations || [];
     }
+    readonly email: string;
+    readonly firstName: string;
+    readonly lastName: string;
+    readonly birthdate: Date;
 
-    get email() {
-        return this._email;
-    }
-
-    get firstName() {
-        return this._firstName;
-    }
-
-    get lastName() {
-        return this._lastName;
-    }
-
-    get birthdate() {
-        return this._birthdate;
-    }
-
-    get friends() {
+    get friends(): { user: User; status: FriendshipStatus }[] {
         return this._friends;
     }
 
-    get invitations() {
+    get invitations(): { user: User; status: FriendshipStatus }[] {
         return this._invitations;
     }
 
     get age(): number {
-        let timeDiff = Math.abs(Date.now() - this._birthdate.getTime());
+        let timeDiff = Math.abs(Date.now() - this.birthdate.getTime());
         const age = Math.floor((timeDiff / (1000 * 3600 * 24)) / 365.25);
         return age
     }
@@ -84,16 +68,16 @@ export class User extends Entity<IUser>  {
         if (invitationIndex !== -1) {
             this._invitations.splice(invitationIndex, 1);
             this._friends.push({ user: inviter, status: FriendshipStatus.Accepted });
-            const inviterIndex = inviter.friends.findIndex((friend) => friend.user.id === this._id);
+            const inviterIndex = inviter._friends.findIndex((friend) => friend.user.id === this.id);
             if (inviterIndex !== -1) {
-                inviter.friends.splice(inviterIndex, 1);
-                inviter.friends.push({ user: this, status: FriendshipStatus.Accepted });
+                inviter._friends.splice(inviterIndex, 1);
+                inviter._friends.push({ user: this, status: FriendshipStatus.Accepted });
             }
         }
     }
 
     declineFriendship(inviter: User): void {
         this._invitations = this._invitations.filter((invite) => invite.user.id !== inviter.id);
-        inviter._friends = inviter._friends.filter((invite) => invite.user.id !== this.id);
+        inviter._friends = inviter.friends.filter((invite) => invite.user.id !== this.id);
     }
 }
