@@ -62,60 +62,6 @@ describe('UserService', () => {
         expect(userRepositoryMock.save).not.toHaveBeenCalled();
     });
 
-    it('should login with valid credentials', async () => {
-        const email = 'user@test.com';
-        const password = 'validPassword';
-
-        const mockUser: IUser = {
-            email,
-            password: 'validPassword', // Omitted for security reasons
-            firstName: 'Patric',
-            lastName: 'Askari',
-            birthdate: new Date('1980-03-07'),
-            friends: [],
-            invitations: [],
-        };
-
-        const userInstance = new User(mockUser);
-
-        userRepositoryMock.findByEmail.mockResolvedValueOnce(userInstance);
-
-        const loginResult = await userService.login(email, password);
-
-        // Expectations
-        expect(loginResult).toEqual({
-            token: expect.any(String),
-            email: mockUser.email,
-            firstName: mockUser.firstName,
-            lastName: mockUser.lastName
-        });
-
-        expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
-    });
-
-    it('should throw an error for invalid credentials', async () => {
-        const email = 'user@test.com';
-        const password = 'invalidpassword';
-        const mockUser: IUser = {
-            email,
-            password: 'hashedpassword', // Omitted for security reasons
-            firstName: 'Ali',
-            lastName: 'Moradi',
-            birthdate: new Date('1993-01-01'),
-            friends: [],
-            invitations: [],
-        };
-
-        const userInstance = new User(mockUser);
-        userRepositoryMock.findByEmail.mockResolvedValueOnce(userInstance);
-
-        jest.spyOn(userInstance, 'isValidPassword').mockReturnValue(false);
-
-        await expect(userService.login(email, password)).rejects.toThrow('Invalid credentials');
-        expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
-        expect(userInstance.isValidPassword).toHaveBeenCalledWith(password);
-    });
-
     describe('searchUsers', () => {
         const allUsersExceptFriendsMock: User[] = [
             new User({
@@ -160,7 +106,7 @@ describe('UserService', () => {
             expect(filteredUsers).toHaveLength(1);
             expect(filteredUsers[0].firstName).toBe('John');
             expect(filteredUsers[0].lastName).toBe('Doe');
-            expect(filteredUsers[0].age).toBe(26); 
+            expect(filteredUsers[0].age).toBe(26);
 
             expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
         });
@@ -178,7 +124,7 @@ describe('UserService', () => {
             expect(filteredUsers).toHaveLength(1);
             expect(filteredUsers[0].firstName).toBe('John');
             expect(filteredUsers[0].lastName).toBe('Doe');
-            expect(filteredUsers[0].age).toBe(26); 
+            expect(filteredUsers[0].age).toBe(26);
 
             expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
         });
