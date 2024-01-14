@@ -7,7 +7,7 @@ const userRepositoryMock: jest.Mocked<UserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
     save: jest.fn(),
-    getAllUsersExcludeFriends: jest.fn()
+    getUserByFilter: jest.fn()
 };
 
 // Mock the implementation of the UserRepository methods
@@ -63,25 +63,7 @@ describe('UserService', () => {
     });
 
     describe('searchUsers', () => {
-        const allUsersExceptFriendsMock: User[] = [
-            new User({
-                email: 'user1@example.com',
-                password: 'password1',
-                firstName: 'Alice',
-                lastName: 'Smith',
-                birthdate: new Date('1995-01-01'),
-                friends: [],
-                invitations: []
-            }),
-            new User({
-                email: 'user2@example.com',
-                password: 'password2',
-                firstName: 'Bob',
-                lastName: 'Johnson',
-                birthdate: new Date('1990-05-15'),
-                friends: [],
-                invitations: []
-            }),
+        const expectedFilteredUserMock= [
             new User({
                 email: 'user3@example.com',
                 password: 'password3',
@@ -91,7 +73,7 @@ describe('UserService', () => {
                 friends: [],
                 invitations: []
             }),
-        ];
+        ]
         it('should return filtered users based on search criteria', async () => {
             // Mock data
             const userId = 'user123';
@@ -99,7 +81,7 @@ describe('UserService', () => {
             const lastName = 'Doe';
             const age = 26;
 
-            userRepositoryMock.getAllUsersExcludeFriends.mockResolvedValueOnce(allUsersExceptFriendsMock);
+            userRepositoryMock.getUserByFilter.mockResolvedValueOnce(expectedFilteredUserMock);
 
             const filteredUsers = await userService.searchUsers(userId, firstName, lastName, age);
 
@@ -108,7 +90,7 @@ describe('UserService', () => {
             expect(filteredUsers[0].lastName).toBe('Doe');
             expect(filteredUsers[0].age).toBe(26);
 
-            expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
+            expect(userRepositoryMock.getUserByFilter).toHaveBeenCalledWith(userId,{ firstName, lastName, age });
         });
 
         it('should return filtered users based on search criteria', async () => {
@@ -117,7 +99,7 @@ describe('UserService', () => {
             const lastName = 'Doe';
             const age = 26;
 
-            userRepositoryMock.getAllUsersExcludeFriends.mockResolvedValueOnce(allUsersExceptFriendsMock);
+            userRepositoryMock.getUserByFilter.mockResolvedValueOnce(expectedFilteredUserMock);
 
             const filteredUsers = await userService.searchUsers(userId, firstName, lastName, age);
 
@@ -126,7 +108,7 @@ describe('UserService', () => {
             expect(filteredUsers[0].lastName).toBe('Doe');
             expect(filteredUsers[0].age).toBe(26);
 
-            expect(userRepositoryMock.getAllUsersExcludeFriends).toHaveBeenCalledWith(userId);
+            expect(userRepositoryMock.getUserByFilter).toHaveBeenCalledWith(userId,{ firstName, lastName, age });
         });
 
     });

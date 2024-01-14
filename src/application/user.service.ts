@@ -15,15 +15,7 @@ export class UserService {
     }
 
     async searchUsers(userId: string, firstName: string | null, lastName: string | null, age: number | null): Promise<User[]> {
-        const allUsersExceptFriends = await this.userRepository.getAllUsersExcludeFriends(userId);
-
-        return allUsersExceptFriends.filter((user) => {
-            const matchFirstName = firstName ? user.firstName.includes(firstName) : true;
-            const matchLastName = lastName ? user.lastName.includes(lastName) : true;
-            const matchAge = age ? user.age === age : true;
-
-            return matchFirstName && matchLastName && matchAge;
-        });
+        return await this.userRepository.getUserByFilter(userId, { firstName, lastName, age });
     }
 
 }

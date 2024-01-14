@@ -7,7 +7,7 @@ const userRepositoryMock: jest.Mocked<UserRepository> = {
     findByEmail: jest.fn(),
     findById: jest.fn(),
     save: jest.fn(),
-    getAllUsersExcludeFriends: jest.fn()
+    getUserByFilter: jest.fn()
 };
 
 // Mock the implementation of the UserRepository methods
