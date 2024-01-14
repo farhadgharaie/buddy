@@ -14,6 +14,18 @@ const userController = (userService: UserService): Router => {
             res.status(400).json({ error: (error as Error).message });
         }
     });
+
+    router.post('/search/:userId', async (req: Request, res: Response) => {
+        try {
+            const userId = req.params.userId;
+            const { firstName, lastName, age } = req.body;
+            console.log(' req.body', req.body)
+            const user = await userService.searchUsers(userId, firstName, lastName, age);
+            res.json(user);
+        } catch (error) {
+            res.status(400).json({ error: (error as Error).message });
+        }
+    });
     return router;
 };
 

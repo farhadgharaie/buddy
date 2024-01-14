@@ -21,6 +21,7 @@ export class MongoDBUserRepository implements UserRepository {
 
   async getUserByFilter(userId: string, userFilter: IUserFilter): Promise<User[]> {
     const user = await this.findById(userId);
+    console.log('user', user)
     if (!user) {
       throw new Error('User not found');
     }
@@ -41,17 +42,7 @@ export class MongoDBUserRepository implements UserRepository {
 
       filter.birthdate = { $gte: endDate, $lt: startDate };
     }
-
-    const users = await UserModel.find({ _id: { $nin: [userId] }, filter })
-      .populate({
-        path: 'friends.user',
-        select:
-          'firstName lastName _id',
-      }).populate({
-        path: 'invitations.user',
-        select:
-          'firstName lastName _id',
-      });;
+    const users = await UserModel.find({ $and: [{ _id: { $nin: [userId] } }, filter] })
     return users.map((u) => new User(u.toObject()));
   }
 }
