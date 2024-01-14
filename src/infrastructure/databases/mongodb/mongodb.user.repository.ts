@@ -1,12 +1,26 @@
-// src/infrastructure/mongodb/user.repository.ts
 import { UserRepository, IUserFilter } from '../../../domain/user.repository';
 import { User } from '../../../domain/user';
 import { UserModel } from './user.model';
 
 export class MongoDBUserRepository implements UserRepository {
   async save(user: User): Promise<User> {
-    const savedUser = await UserModel.create(user);
-    return new User(savedUser.toObject());
+    const filter = { email: user.email };
+    const update = {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      birthdate: user.birthdate,
+      email: user.email,
+      password: user.password,
+      friends: user.friends,
+      invitations: user.invitations
+    };
+    const options = { new: true, upsert: true };
+    const savedUser = await UserModel.findOneAndUpdate(filter, update, options);
+    if (savedUser) {
+      return new User(savedUser.toObject());
+    } else {
+      throw new Error('save error')
+    }
   }
 
   async findByEmail(email: string): Promise<User | null> {
