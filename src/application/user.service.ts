@@ -1,5 +1,6 @@
 import { User } from '../domain/user';
 import { UserRepository } from '../domain/user.repository';
+import { PasswordEncoder } from '../core/encoder'
 
 export class UserService {
     constructor(private userRepository: UserRepository) { }
@@ -9,8 +10,8 @@ export class UserService {
         if (existingUser) {
             throw new Error('Email is already in use');
         }
-
-        const user = new User({ email, password, firstName, lastName, birthdate, friends: [], invitations: [] });
+        const hashPassword = await PasswordEncoder.encodePassword(password)
+        const user = new User({ email, password: hashPassword, firstName, lastName, birthdate, friends: [], invitations: [] });
         return await this.userRepository.save(user);
     }
 

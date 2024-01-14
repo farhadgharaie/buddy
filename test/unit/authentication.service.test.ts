@@ -1,6 +1,7 @@
 import { AuthenticationService } from '../../src/application/authentication.service';
 import { UserRepository } from "../../src/domain/user.repository";
 import { User, IUser } from '../../src/domain/user';
+import { PasswordEncoder } from '../../src/core/encoder';
 
 // A mock for the UserRepository interface
 const userRepositoryMock: jest.Mocked<UserRepository> = {
@@ -14,12 +15,15 @@ const userRepositoryMock: jest.Mocked<UserRepository> = {
 jest.mock('../../src/domain/user.repository', () => ({
     UserRepository: jest.fn(() => userRepositoryMock),
 }));
+jest.mock('../../src/core/encoder');
 
 describe('UserService', () => {
-    let userService: AuthenticationService;
-
+    let authService: AuthenticationService;
+    let passwordEncoderMock: jest.Mocked<typeof PasswordEncoder>;
     beforeEach(() => {
-        userService = new AuthenticationService(userRepositoryMock);
+        authService = new AuthenticationService(userRepositoryMock);
+        passwordEncoderMock = PasswordEncoder as jest.Mocked<typeof PasswordEncoder>;
+
     });
 
     afterEach(() => {
@@ -43,8 +47,9 @@ describe('UserService', () => {
         const userInstance = new User(mockUser);
 
         userRepositoryMock.findByEmail.mockResolvedValueOnce(userInstance);
+        passwordEncoderMock.comparePasswords.mockResolvedValue(true);
 
-        const loginResult = await userService.login(email, password);
+        const loginResult = await authService.login(email, password);
 
         // Expectations
         expect(loginResult).toEqual({
@@ -58,25 +63,9 @@ describe('UserService', () => {
     });
 
     it('should throw an error for invalid credentials', async () => {
-        const email = 'user@test.com';
-        const password = 'invalidpassword';
-        const mockUser: IUser = {
-            email,
-            password: 'hashedpassword', // Omitted for security reasons
-            firstName: 'Ali',
-            lastName: 'Moradi',
-            birthdate: new Date('1993-01-01'),
-            friends: [],
-            invitations: [],
-        };
+        userRepositoryMock.findByEmail.mockResolvedValue(null);
+        passwordEncoderMock.comparePasswords.mockResolvedValue(false);
 
-        const userInstance = new User(mockUser);
-        userRepositoryMock.findByEmail.mockResolvedValueOnce(userInstance);
-
-        jest.spyOn(userInstance, 'isValidPassword').mockReturnValue(false);
-
-        await expect(userService.login(email, password)).rejects.toThrow('Invalid credentials');
-        expect(userRepositoryMock.findByEmail).toHaveBeenCalledWith(email);
-        expect(userInstance.isValidPassword).toHaveBeenCalledWith(password);
+        await expect(authService.login('test@example.com', 'password')).rejects.toThrow('Invalid credentials');
     });
 });

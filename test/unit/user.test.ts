@@ -6,7 +6,7 @@ import { User, IUser, FriendshipStatus } from "../../src/domain/user";
 describe('Unit test User', () => {
 
     const validEmail = 'test@test.com';
-    const validPassword = 'securePassword@1234';
+    const validPassword = 'securedPassword';
     const validFirstName = "Jim";
     const validLastName = "Petrosian";
     const validBirthdate = new Date("1985-09-08");
@@ -25,12 +25,12 @@ describe('Unit test User', () => {
     describe('User.Register', () => {
         it('generates user when all properties are valid', () => {
             const user = new User(userMock);
-            expect(user).not.toHaveProperty('password');
             expect(user).toBeDefined();
             expect(user.email).toBe(userMock.email);
             expect(user.firstName).toBe(userMock.firstName);
             expect(user.lastName).toBe(userMock.lastName);
             expect(user.birthdate).toBe(userMock.birthdate);
+            expect(user.password).toBe(userMock.password);
             expect(user.friends).toEqual(userMock.friends);
             expect(user.invitations).toEqual(userMock.invitations);
         });
@@ -43,12 +43,6 @@ describe('Unit test User', () => {
         it('generates valid uuid when no ID is provided', () => {
             const user = new User(userMock);
             assert.ok(validate(user.id));
-        });
-
-        it('generates user with valid password', () => {
-            const user = new User(userMock);
-            expect(user.isValidPassword(validPassword)).toBeTruthy
-           
         });
 
         it('invites a friend', () => {

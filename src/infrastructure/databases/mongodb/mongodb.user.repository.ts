@@ -10,12 +10,12 @@ export class MongoDBUserRepository implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await UserModel.findOne({ email }).populate('friends.user').populate('invitations.user');
+    const user = await UserModel.findOne({ email })
     return user ? new User(user.toObject()) : null;
   }
 
   async findById(id: string): Promise<User | null> {
-    const user = await UserModel.findById(id).populate('friends.user').populate('invitations.user');
+    const user = await UserModel.findById(id);
     return user ? new User(user.toObject()) : null;
   }
 
@@ -43,8 +43,15 @@ export class MongoDBUserRepository implements UserRepository {
     }
 
     const users = await UserModel.find({ _id: { $nin: [userId] }, filter })
-      .populate('friends.user')
-      .populate('invitations.user');
+      .populate({
+        path: 'friends.user',
+        select:
+          'firstName lastName _id',
+      }).populate({
+        path: 'invitations.user',
+        select:
+          'firstName lastName _id',
+      });;
     return users.map((u) => new User(u.toObject()));
   }
 }
