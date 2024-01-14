@@ -36,7 +36,7 @@ describe('UserService', () => {
 
         const mockUser: IUser = {
             email,
-            password: 'validPassword', // Omitted for security reasons
+            password: 'validPassword', 
             firstName: 'Patric',
             lastName: 'Askari',
             birthdate: new Date('1980-03-07'),
@@ -51,7 +51,6 @@ describe('UserService', () => {
 
         const loginResult = await authService.login(email, password);
 
-        // Expectations
         expect(loginResult).toEqual({
             token: expect.any(String),
             email: mockUser.email,
