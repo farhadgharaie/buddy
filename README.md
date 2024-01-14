@@ -89,15 +89,11 @@ cd buddy
 ### Install dependencies
 npm install
 
-### Copy the example .env file
-cp .env.example .env
-
 ### Initialize the database
-npx prisma generate
-npx prisma db push
+run mongodb as a docker image or install it individually
 
 ### Run the app
-npm run dev
+npm run
 
 ### Access APIs on http://localhost:3000
 call http://localhost:3000
